@@ -8,7 +8,7 @@ keyspaceHitsPerSecond:
       eventId: entityGuid
       eventName: entityName
     opentelemetry:
-      select: rate(sum(redis.keyspace.hits), 1 second)
+      select: sum(redis.keyspace.hits) / sum((endTimestamp - timestamp) / 1000)
       from: Metric
       where: metricName = 'redis.keyspace.hits'
       eventId: entity.guid
@@ -23,7 +23,7 @@ keyspaceMissesPerSecond:
       eventId: entityGuid
       eventName: entityName
     opentelemetry:
-      select: rate(sum(redis.keyspace.misses), 1 second)
+      select: sum(redis.keyspace.misses) / sum((endTimestamp - timestamp) / 1000)
       from: Metric
       where: metricName = 'redis.keyspace.misses'
       eventId: entity.guid
