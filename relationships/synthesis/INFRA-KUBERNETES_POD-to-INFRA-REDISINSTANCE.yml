@@ -1,0 +1,50 @@
+# TODO: Gate behind feature flag ohai.redis.otel_integration when available
+#
+# Relationship: Kubernetes Pod hosts Redis instance (OpenTelemetry)
+# This relationship connects K8s pods running the OTel Collector Redis receiver
+# to the REDISINSTANCE entity they are monitoring.
+
+relationships:
+  # OpenTelemetry: K8s pod hosts Redis instance
+  # Triggered when Redis metrics are collected from within a K8s pod
+  - name: k8sPodHostsOtelRedisinstance
+    version: "1"
+    origins:
+      - OpenTelemetry
+    conditions:
+      - attribute: eventType
+        anyOf: [ "Metric" ]
+      - attribute: metricName
+        startsWith: redis.
+      - attribute: instrumentation.provider
+        anyOf: [ "opentelemetry" ]
+      - attribute: k8s.cluster.name
+        present: true
+      - attribute: k8s.namespace.name
+        present: true
+      - attribute: k8s.pod.name
+        present: true
+    relationship:
+      expires: PT75M
+      relationshipType: HOSTS
+      source:
+        buildGuid:
+          account:
+            lookup: true
+          domain:
+            value: INFRA
+          type:
+            value: KUBERNETES_POD
+          identifier:
+            fragments:
+              - attribute: k8s.cluster.name
+              - value: ":"
+              - attribute: k8s.namespace.name
+              - value: ":"
+              - attribute: k8s.pod.name
+            hashAlgorithm: FARM_HASH
+      target:
+        extractGuid:
+          attribute: entity.guid
+          entityType:
+            value: REDISINSTANCE

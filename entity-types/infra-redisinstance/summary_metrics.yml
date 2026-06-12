@@ -1,12 +1,29 @@
-keyspaceHitsPerSecond:
-  goldenMetric: keyspaceHitsPerSecond
+# TODO: Gate behind feature flag ohai.redis.otel_integration when available
+#
+# Summary metrics for INFRA-REDISINSTANCE entity explorer cards
+# Supports both New Relic OHI (RedisSample) and OpenTelemetry Redis Receiver metrics
+
+throughput:
+  goldenMetric: throughput
+  title: Commands per second
   unit: OPERATIONS_PER_SECOND
-  title: Keyspace hit ratio
-keyspaceMissesPerSecond:
-  goldenMetric: keyspaceMissesPerSecond
-  unit: OPERATIONS_PER_SECOND
-  title: Keyspace misses ratio
+
+responseTimeMs:
+  goldenMetric: responseTimeMs
+  title: Command latency (p99)
+  unit: MS
+
+memoryUsage:
+  goldenMetric: memoryUsage
+  title: Memory used
+  unit: BYTES
+
+cacheHitRatio:
+  goldenMetric: cacheHitRatio
+  title: Cache hit ratio
+  unit: PERCENTAGE
+
 connectedClients:
   goldenMetric: connectedClients
+  title: Connected clients
   unit: COUNT
-  title: Client connections
